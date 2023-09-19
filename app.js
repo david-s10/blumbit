@@ -1,10 +1,15 @@
+// Часть которая отвечает за показ линков у лидов "НАЧАЛО"
+
+const stylesForLinks =  `position: absolute; top: 10px; right: 30px; Font-family: Roboto;`
+
 const linkForSearch = (title, geo) => {
     googleLink = document.createElement('a')
-    googleLink.href = `https://www.google.com/search?q=${title} ${geo} linkedin`
+    googleLink.href = `https://www.google.com/search?q=${title.trim()} ${geo.trim()} linkedin`
     googleLink.textContent = 'google'
-    googleLink.classList.add('ok')
+    googleLink.style.cssText = stylesForLinks
     return googleLink
 }
+
 
 
 function handleNewElements(mutationsList) {
@@ -12,13 +17,14 @@ function handleNewElements(mutationsList) {
       if (mutation.type === 'childList') {
         const newElements = document.querySelectorAll('[data-view-name="search-entity-result-universal-template"]:not(.processed)');
         if (newElements.length > 0) {
-          newElements.forEach(l => {
-            s = l.querySelector('.linked-area');
-            const title = s.querySelector('.entity-result__primary-subtitle').textContent;
-            const geo = s.querySelector('.entity-result__secondary-subtitle').textContent;
+          newElements.forEach(leadArrea => {
+            const infoArea = leadArrea.querySelector('.linked-area');
+            leadArrea.style.position = 'relative'
+            const title = infoArea.querySelector('.entity-result__primary-subtitle').textContent;
+            const geo = infoArea.querySelector('.entity-result__secondary-subtitle').textContent;
             const links = linkForSearch(title, geo);
-            l.append(links);
-            l.classList.add('processed');
+            leadArrea.append(links);
+            leadArrea.classList.add('processed');
           });
         }
       }
@@ -28,4 +34,8 @@ function handleNewElements(mutationsList) {
   const observer = new MutationObserver(handleNewElements);
   
   observer.observe(document.body, { childList: true, subtree: true });
+
+ // Часть которая отвечает за показ линков у лидов "КОНЕЦ"
+
+
   

@@ -1,15 +1,16 @@
 {
     "manifest_version": 3,
-    "name": "Mail link healer",
+    "name": "next_blumbit",
     "version": "1.0",
-    "description": "Ссылка «Входящие» и «Написать письмо» снова открываются в той же вкладке!",
+    "description": "",
     "action": {
         "default_popup": "popup.html"
     },
     "content_scripts": [
         {   
+            "resources": [ "./data/geo.json" ],
             "matches": ["https://www.linkedin.com/*"],
-            "js": [ "app.js" ]
+            "js": [ "app.js", "sort.js" ]
         }
     ]
  }
