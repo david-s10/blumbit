@@ -10,7 +10,7 @@
         {   
             "resources": [ "./data/geo.json" ],
             "matches": ["https://www.linkedin.com/*"],
-            "js": [ "app.js", "sort.js" ]
+            "js": [ "app.js", "sort.js", "locations.js" ]
         }
     ]
  }

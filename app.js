@@ -30,6 +30,7 @@ function handleNewElements(mutationsList) {
       }
     }
   }
+
   
   const observer = new MutationObserver(handleNewElements);
   
