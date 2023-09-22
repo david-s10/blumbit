@@ -3,13 +3,13 @@ const locations =
     // USA: '103644278', 
     // UK: '101165590', 
     // Singapore: '102454443',
-    Nordic: {
-        "Norway": "103819153",
-        "Sweden": "105117694",
-        "Finland": "100456013",
-        "Denmark": "104514075",
-        "Iceland": "105238872",
-    },
+    // Nordic: {
+    //     "Norway": "103819153",
+    //     "Sweden": "105117694",
+    //     "Finland": "100456013",
+    //     "Denmark": "104514075",
+    //     "Iceland": "105238872",
+    // },
     EMEA: {
         "Albania": "102845717",
         "Algeria": "106395874",
@@ -151,6 +151,93 @@ const locations =
         "Hong Kong": "103291313",
         "Hong Kong SAR": "103291313",
         "India": "102713980",
+        "Indonesia": "102478259",
+        "Iraq": "106725625",
+        "Iran": "101934083",
+        "Israel": "101620260",
+        "Japan": "101355337",
+        "Jordan": "103710677",
+        "Kazakhstan": "106049128",
+        "Kiribati": "104742735",
+        "Kuwait": "103239229",
+        "Kyrgyzstan": "103490790",
+        "Laos": "100664862",
+        "Lebanon": "101834488",
+        "Macao": "101316508",
+        "Malaysia": "106808692",
+        "Maldives": "102161637",
+        "Marshall Islands": "106516799",
+        "Myanmar": "104136533",
+        "Mongolia": "102396337",
+        "Nauru": "100348836",
+        "Nepal": "104630404",
+        "New Zealand": "105490917",
+        "Niue": "102139488",
+        "Norfolk Island": "116224156",
+        "Oman": "103619019",
+        "Pakistan": "101022442",
+        "Palau": "106779877",
+        "Palestina": "93000000",
+        "Papua New Guinea": "100152180",
+        "Philippines": "103121230",
+        "Qatar": "104170880",
+        "South Korea": "105149562",
+        "Saudi Arabia": "100459316",
+        "Singapore": "102454443",
+        "Solomon Islands": "104980134",
+        "Sri Lanka": "100446352",
+        "Syrian Arab Republic": "100446352",
+        "Tajikistan": "105925962",
+        "Taiwan": "104187078",
+        "Thailand": "105146118",
+        "Timor-Leste": "101101678",
+        "Tokelau": "100212364",
+        "Tonga": "105646927",
+        "Turkey": "102105699",
+        "Turkmenistan": "105449295",
+        "Tuvalu": "103609605",
+        "United Arab Emirates": "104305776",
+        "Uzbekistan": "107734735",
+        "Vanuatu": "102185308",
+        "Viet Nam": "104195383",
+        "Samoa": "104031721",
+        "Yemen": "105962095",
+    },
+    LATAM: {
+        "Belize": "105912732",
+        "Costa Rica": "101739942",
+        "El Salvador": "106522560",
+        "Guatemala": "100877388",
+        "Honduras": "101937718",
+        "Honduras": "101937718",
+        "Mexico": "103323778",
+        "Nicaragua": "105517145",
+        "Panama": "100808673",
+        "Argentina": "100446943",
+        "Bolivia": "104379274",
+        "Brazil": "106057199",
+        "Chile": "104621616",
+        "Colombia": "100876405",
+        "Ecuador": "106373116",
+        "French Guiana": "105001561",
+        "Guyana": "105836293",
+        "Paraguay": "104065273",
+        "Peru": "102927786",
+        "Suriname": "105530931",
+        "Uruguay": "100867946",
+        "Venezuela": "101490751",
+        "Cuba": "106429766",
+        "Dominican Republic": "",
+        "Haiti": "100993490",
+        "Guadeloupe": "104232339",
+        "Martinique": "103091690",
+        "Puerto Rico": "105245958", 
+        "Saint-Barthélemy": "100936035",
+        "Saint-Martin": "103917985",
+    },
+    unsorted: {
+        "USA": "103644278",
+        "Canada": "101174742",   
     }
 }
 
@@ -208,6 +295,22 @@ document.querySelector('body').append(sortBar)
 
 // События для интерфейса  
 
+const clearUrl = () => {
+    const url = window.location.href
+    const firstStringForFind = '&geoUrn'
+    const secondStringForFind = '&origin'
+    const firstFindIndex = url.indexOf(firstStringForFind)
+    const SecondFindIndex = url.indexOf(secondStringForFind)
+    if(firstFindIndex !== -1){
+        const firstSliceUrl =  url.slice(0, firstFindIndex)
+        const secondSliceUrl = url.slice(SecondFindIndex)
+        return firstSliceUrl + secondSliceUrl 
+        
+    }else{
+        return url
+    }
+}
+
 const filterByGeo = (value) => {
     let endGeo = []
     const inputGeo = value
@@ -220,14 +323,16 @@ const filterByGeo = (value) => {
         }
     }
 
-    const ggg = endGeo.join('"%2C"')
-    const geo = `&geoUrn=%5B"${ggg}"%5D`
-    const location = window.location.href
+    const location = clearUrl()
     const searchString = '&origin'
     const areaForPath = location.indexOf(searchString)
-    const newLocation = location.slice(0, areaForPath) + geo + location.slice(areaForPath)
-    console.log(newLocation)
-    window.location = newLocation
+    if(areaForPath !== -1){
+        const ggg = endGeo.join('"%2C"')
+        const geo = `&geoUrn=%5B"${ggg}"%5D`
+        const newLocation = location.slice(0, areaForPath) + geo + location.slice(areaForPath)
+        console.log(newLocation)
+        window.location = newLocation
+    }
 }
 
 const selectGeoFromOption = (value) => {
