@@ -243,53 +243,85 @@ const locations =
 
 // Создание интерфейса управления и стили к нему
 
-const cssStyles = 
-`
-.next-blumbit_wrapper {position: fixed; padding: 5px; width: 300px; height: 300px; top: 10%; left: 0%; background: linear-gradient(0deg, rgba(55,55,58,1) 0%, rgba(0,0,0,1) 100%); z-index: 99999; border-radius: 12px; color: #fff; border: 2px; border-color: #fff}
-.next-blumbit_wrapper.active {left: 0}
-.next-blumnit_content {display: flex; flex-direction: column; height: 100%; font-family: Courier New;}
-.next-blumbit_ul {display: flex; gap: 10px; color: #fff}
-.next-blumbit_li {list-style: none; cursor: pointer;}
-.next-blumbit_li:hover {color: #03f0f9;}
-.next-blumbit_label {margin-top: auto; color: #fff;}
-.next-blumbit_input {color: #fff; width: 100%}
-.next-blumbit_input::placeholder {color: #fff}
-.next-blumbit_button {margin: auto auto 0; ; border: 2px solid #fff; border-radius: 8px; padding: 5px 10px; color: #fff;}
-`
-const style = document.createElement('style')
-style.textContent = cssStyles
-document.head.appendChild(style)
+if(window.location.href.indexOf('people') !== -1){
+    const createInterface = () => {
+        const wrapperForInterface = document.querySelector('[aria-labelledby="search-srp-prompt"]:not(.processed)')
+        wrapperForInterface.classList.add('processed')
+        const cssStyles = 
+        
+        `
+        .next-blumbit_wrapper {padding: 5px; background: #fff; border: 1px solid #d6d6d3; border-radius: 6px;}
+        .next-blumbit_wrapper.active {}
+        .next-blumnit_content {display: flex; flex-direction: column; height: 100%; gap: 5px; font-family: Courier New;}
+        .next-blumbit_ul {display: flex; gap: 10px; }
+        .next-blumbit_li {list-style: none; cursor: pointer; font-size: 14px;}
+        .next-blumbit_li:hover {color: #03f0f9;}
+        .next-blumbit_form {margin-top: auto; display: flex; gap: 30px}
+        .next-blumbit_input {border: 1px solid #d6d6d3;}
+        .next-blumbit_input::placeholder {}
+        .next-blumbit_button {margin: auto auto 0; ; border: 1px solid #d6d6d3; border-radius: 6px; padding: 5px 10px; }
+        `
+        const style = document.createElement('style')
+        style.textContent = cssStyles
+        document.head.appendChild(style)
+
+        const keywordsLocal = localStorage.getItem('next-blumbit-keywords')
+        const keywords = JSON.parse(keywordsLocal)
+
+        const fabric = (tagName, className, textName) => {
+            const element = document.createElement(tagName)
+            element.classList.add(className)
+            element.textContent = textName
+            return element
+        }
+
+        const sortBar = fabric('div', 'next-blumbit_wrapper')
+        const sortBarContent = fabric('div', 'next-blumnit_content')
+        const formlBar = fabric('form', 'next-blumbit_form')
+        const inputBar = fabric('input', 'next-blumbit_input')
+        const inputTitle = fabric('input', 'next-blumbit_input')
+        const keywordsList = fabric('ul', 'next-blumbit_ul')
+        inputBar.placeholder = 'Гео з проекту'
+        inputTitle.placeholder = 'Тайтл з проекту'
+        const button = fabric('button', 'next-blumbit_button', 'confrim')
+        button.addEventListener('click', () => filterByGeo(inputBar.value, inputTitle.value))
+
+        const select = fabric('ul', 'next-blumbit_ul')
+
+        for (const key in keywords){
+            const keyword = fabric('li', 'next-blumbit_li')
+            keyword.textContent = keywords[key]
+            keywordsList.append(keyword)
+            keyword.addEventListener('click', () => filterByTitle(keyword.textContent))
+        }
+
+        for (const key in locations){
+            const option = fabric('li', 'next-blumbit_li')
+            option.setAttribute('data-country', key)
+            option.textContent=`${key}`
+            option.addEventListener('click', () => selectGeoFromOption(option.getAttribute('data-country')))
+            select.append(option)
+        }
+
+        sortBarContent.append(select, formlBar, keywordsList, button)
+        formlBar.append(inputBar, inputTitle)
+        sortBar.append(sortBarContent)
+        wrapperForInterface.prepend(sortBar)
+    }
 
 
-const fabric = (tagName, className, textName) => {
-    const element = document.createElement(tagName)
-    element.classList.add(className)
-    element.textContent = textName
-    return element
+
+    let previousUrl = '';
+        const observer = new MutationObserver(function(mutations) {
+            if (location.href !== previousUrl) {
+                previousUrl = location.href;
+                createInterface()
+            }
+        });
+    const config = {subtree: true, childList: true};
+    observer.observe(document, config);
 }
 
-const sortBar = fabric('div', 'next-blumbit_wrapper')
-const sortBarContent = fabric('div', 'next-blumnit_content')
-const labelBar = fabric('label', 'next-blumbit_label')
-const inputBar = fabric('input', 'next-blumbit_input')
-inputBar.placeholder = 'Вставити гео з проекту'
-const button = fabric('button', 'next-blumbit_button', 'confrim')
-button.addEventListener('click', () => filterByGeo(inputBar.value))
-
-const select = fabric('ul', 'next-blumbit_ul')
-
-for (const key in locations){
-    const option = fabric('li', 'next-blumbit_li')
-    option.setAttribute('data-country', key)
-    option.textContent=`${key}`
-    option.addEventListener('click', () => selectGeoFromOption(option.getAttribute('data-country')))
-    select.append(option)
-}
-
-sortBarContent.append(select, labelBar, button)
-labelBar.append(inputBar)
-sortBar.append(sortBarContent)
-document.querySelector('body').append(sortBar)
 
 // Конец создания интерфейса
 
@@ -311,27 +343,38 @@ const clearUrl = () => {
     }
 }
 
-const filterByGeo = (value) => {
-    let endGeo = []
-    const inputGeo = value
-    for (let keys in locations){
-        for (let key in locations[keys]){
-                if(inputGeo.includes(key)){
-                    console.log(key)
-                    endGeo = [...endGeo, locations[keys][key]]
-                } 
-        }
+const filterByGeo = (value, titleValue) => {
+
+    if(titleValue){
+        const keywords = titleValue.split(',')
+        localStorage.setItem('next-blumbit-keywords', JSON.stringify(keywords))
     }
 
-    const location = clearUrl()
-    const searchString = '&origin'
-    const areaForPath = location.indexOf(searchString)
-    if(areaForPath !== -1){
-        const ggg = endGeo.join('"%2C"')
-        const geo = `&geoUrn=%5B"${ggg}"%5D`
-        const newLocation = location.slice(0, areaForPath) + geo + location.slice(areaForPath)
-        console.log(newLocation)
-        window.location = newLocation
+    if(value){
+        let endGeo = []
+        const inputGeo = value
+        for (let keys in locations){
+            for (let key in locations[keys]){
+                    if(inputGeo.includes(key)){
+                        console.log(key)
+                        endGeo = [...endGeo, locations[keys][key]]
+                    } 
+            }
+        }
+
+        const location = clearUrl()
+        
+        const searchString = '&origin'
+        const areaForPath = location.indexOf(searchString)
+        if(areaForPath !== -1){
+            const ggg = endGeo.join('"%2C"')
+            const geo = `&geoUrn=%5B"${ggg}"%5D`
+            const newLocation = location.slice(0, areaForPath) + geo + location.slice(areaForPath)
+            console.log(newLocation)
+            window.location = newLocation
+        }
+    }else{
+        window.location = location
     }
 }
 
@@ -345,4 +388,16 @@ const selectGeoFromOption = (value) => {
         }
     }
     filterByGeo(locs.slice(','))
+}
+
+const filterByTitle = (title) => {
+    const currentLocation = window.location.href
+    const titleQuery = '&titleFreeText='
+    const index = currentLocation.indexOf(titleQuery) + 1
+    if(index !== -1){
+        window.location = currentLocation + titleQuery + title
+    }else{
+        const newUrl = currentLocation.slice(0, index)
+        window.location = newUrl + titleQuery + title
+    }
 }
