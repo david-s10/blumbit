@@ -1,13 +1,24 @@
 // Часть которая отвечает за показ линков у лидов "НАЧАЛО"
 
-const stylesForLinks =  `position: absolute; top: 10px; right: 30px; Font-family: Roboto;`
+const stylesForLinks =  `position: absolute; top: 5px; right: 30%; Font-family: Roboto; display: flex; gap: 5px;`
+
+const createLink = (linkName) => {
+  const link = document.createElement('a')
+  link.textContent = linkName
+  link.target = '_blank'
+  return link 
+}
 
 const linkForSearch = (title, geo) => {
-    googleLink = document.createElement('a')
+    const links = document.createElement('div')
+    links.style.cssText = stylesForLinks
+    const googleLink = createLink('google')
+    const yahooLink = createLink('yahoo!')
     googleLink.href = `https://www.google.com/search?q=${title.trim()} ${geo.trim()} linkedin`
-    googleLink.textContent = 'google'
-    googleLink.style.cssText = stylesForLinks
-    return googleLink
+    yahooLink.href = `https://search.yahoo.com/search?p=${title.trim()} ${geo.trim()} linkedin`
+    links.append(yahooLink, googleLink)
+
+    return links
 }
 
 

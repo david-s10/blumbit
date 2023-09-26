@@ -241,6 +241,15 @@ const locations =
     }
 }
 
+const jobFunctions = {
+    IT: ['Developer', 'programmer', 'Software', 'Cloud', 'IT', 'Information Technology', 'Solutions Architect', 'cyber security', 'information', 'security', 'infrastructure', 'system'],
+    Marketing: ['Marketing', 'Digital', 'advertising', 'Content', 'Brand', 'SEO', 'Social Media', 'Public RelationsBgl Group', 'Communications', 'Media Relations', 'Market Research', 'EVENT', 'Demand Generation', 'buyer', 'Relationship', 'account'],
+    Finance: ['Accountant', 'Accounting', 'Finance', 'Audit', 'Budget', 'Payroll', 'Investments', 'Revenue', 'Cash', 'Tax', 'Credit', 'Controller'],
+    Sales: ['Sales', 'Insede Sales', 'Outside Sales', 'Business Development', 'Account', 'Distribution'],
+    Customer: ['Customer Service', 'Call Center', 'Contact Center', 'Help Desk', 'Client', 'Customer Success', 'Customer Experience', 'Account', 'Client Relationship', 'Case', 'care', 'Customer Support', 'Relationship',],
+    HR: ['Benefits', 'Compensation', 'Human Resources', 'HR', 'Total Rewards', 'Talent Management', 'Recruiter', 'Talent Acquisition', 'Sourcing', 'Chief People Officer', ]
+}
+
 // Создание интерфейса управления и стили к нему
 
 if(window.location.href.indexOf('people') !== -1){
@@ -252,12 +261,15 @@ if(window.location.href.indexOf('people') !== -1){
         `
         .next-blumbit_wrapper {padding: 5px; background: #fff; border: 1px solid #d6d6d3; border-radius: 6px;}
         .next-blumbit_wrapper.active {}
-        .next-blumnit_content {display: flex; flex-direction: column; height: 100%; gap: 5px; font-family: Courier New;}
+        .next-blumnit_content {display: flex; flex-direction: column; height: 100%; gap: 5px;}
         .next-blumbit_ul {display: flex; gap: 10px; }
-        .next-blumbit_li {list-style: none; cursor: pointer; font-size: 14px;}
+        .next-blumbit_dropdown { display: none; flex-direction: column; position: absolute; top: 20px; left: -15px; background: #fff; gap: 2px; z-index: 2; border: 1px solid #d6d6d3; padding: 10px;}
+        .next-blumbit_li {position: relative; list-style: none; cursor: pointer; font-size: 14px;}
         .next-blumbit_li:hover {color: #03f0f9;}
+        .next-blumbit_joblist { position: relative; list-style: none; cursor: pointer; font-size: 14px; }
+        .next-blumbit_joblist:hover .next-blumbit_dropdown { display: flex }
         .next-blumbit_form {margin-top: auto; display: flex; gap: 30px}
-        .next-blumbit_input {border: 1px solid #d6d6d3;}
+        .next-blumbit_input {border: 1px solid #d6d6d3; text-align: center; padding: 5px}
         .next-blumbit_input::placeholder {}
         .next-blumbit_button {margin: auto auto 0; ; border: 1px solid #d6d6d3; border-radius: 6px; padding: 5px 10px; }
         `
@@ -281,18 +293,35 @@ if(window.location.href.indexOf('people') !== -1){
         const inputBar = fabric('input', 'next-blumbit_input')
         const inputTitle = fabric('input', 'next-blumbit_input')
         const keywordsList = fabric('ul', 'next-blumbit_ul')
+        const select = fabric('ul', 'next-blumbit_ul')
+        const jobList = fabric('ul', 'next-blumbit_ul')
         inputBar.placeholder = 'Гео з проекту'
-        inputTitle.placeholder = 'Тайтл з проекту'
+        inputTitle.placeholder = "Запам'ятати тайтл"
         const button = fabric('button', 'next-blumbit_button', 'confrim')
         button.addEventListener('click', () => filterByGeo(inputBar.value, inputTitle.value))
 
-        const select = fabric('ul', 'next-blumbit_ul')
+        
 
         for (const key in keywords){
             const keyword = fabric('li', 'next-blumbit_li')
             keyword.textContent = keywords[key]
             keywordsList.append(keyword)
             keyword.addEventListener('click', () => filterByTitle(keyword.textContent))
+        }
+
+        for (const key in jobFunctions){
+            const jf = fabric('li', 'next-blumbit_joblist')
+            const jobTitleList = fabric('ul', 'next-blumbit_dropdown')
+            jf.textContent = `${key}`
+            jobList.append(jf)
+            jf.append(jobTitleList)
+            for (const title of jobFunctions[key]){
+                const jobtitle = fabric('li', 'next-blumbit_li')
+                jobtitle.textContent = title
+                jobtitle.addEventListener('click', () => filterByTitle(jobtitle.textContent))
+                jobTitleList.append(jobtitle)
+                
+            }
         }
 
         for (const key in locations){
@@ -303,7 +332,7 @@ if(window.location.href.indexOf('people') !== -1){
             select.append(option)
         }
 
-        sortBarContent.append(select, formlBar, keywordsList, button)
+        sortBarContent.append(select, formlBar, keywordsList, jobList, button)
         formlBar.append(inputBar, inputTitle)
         sortBar.append(sortBarContent)
         wrapperForInterface.prepend(sortBar)
