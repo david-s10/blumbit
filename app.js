@@ -11,11 +11,14 @@ const createLink = (linkName) => {
 
 const linkForSearch = (title, geo) => {
     const links = document.createElement('div')
+    const titleGeo = `${title.trim()} ${geo.trim()}`
+    const pasteUrl = titleGeo.replace(/&/g, '%26')
     links.style.cssText = stylesForLinks
     const googleLink = createLink('google')
     const yahooLink = createLink('yahoo!')
-    googleLink.href = `https://www.google.com/search?q=${title.trim()} ${geo.trim()} linkedin`
-    yahooLink.href = `https://search.yahoo.com/search?p=${title.trim()} ${geo.trim()} linkedin`
+    // const urlForGoogle = `https://www.google.com/search?q=${title.trim()} ${geo.trim()} linkedin`
+    googleLink.href = `https://www.google.com/search?q=${pasteUrl} linkedin`
+    yahooLink.href = `https://search.yahoo.com/search?p=${pasteUrl} linkedin`
     links.append(yahooLink, googleLink)
 
     return links

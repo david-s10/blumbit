@@ -292,11 +292,13 @@ if(window.location.href.indexOf('people') !== -1){
         const formlBar = fabric('form', 'next-blumbit_form')
         const inputBar = fabric('input', 'next-blumbit_input')
         const inputTitle = fabric('input', 'next-blumbit_input')
-        const keywordsList = fabric('ul', 'next-blumbit_ul')
+        const keywordsList = fabric('ul', 'next-blumbit_dropdown')
+        const keywordsNav = fabric('div', 'next-blumbit_joblist')
         const select = fabric('ul', 'next-blumbit_ul')
         const jobList = fabric('ul', 'next-blumbit_ul')
         inputBar.placeholder = 'Гео з проекту'
         inputTitle.placeholder = "Запам'ятати тайтл"
+        keywordsNav.textContent = 'keywords'
         const button = fabric('button', 'next-blumbit_button', 'confrim')
         button.addEventListener('click', () => filterByGeo(inputBar.value, inputTitle.value))
 
@@ -332,7 +334,10 @@ if(window.location.href.indexOf('people') !== -1){
             select.append(option)
         }
 
-        sortBarContent.append(select, formlBar, keywordsList, jobList, button)
+
+
+        sortBarContent.append(select, formlBar, keywordsNav, jobList, button)
+        keywordsNav.append(keywordsList)
         formlBar.append(inputBar, inputTitle)
         sortBar.append(sortBarContent)
         wrapperForInterface.prepend(sortBar)
